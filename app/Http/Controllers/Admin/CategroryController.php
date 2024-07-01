@@ -97,7 +97,40 @@ class CategroryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $category = Category::findOrFail($id);
+            $validation= Validator::make( $request->all(),[
+                'category_name'=>'required|string|max:20|min:10|unique:categories',
+            ]);
+            if ($validation->fails()) {
+                return response()->json([
+                    'success'=>false,
+                    'message'=> "Validator error",
+                    'error'=> $validation->errors(),
+                ],422);
+            }
+            else{
+                $category= $category->update($request->$validation);
+                if ($category) {
+                    return response()->json([
+                        'success'=> true,
+                        'message'=> "Category update succefully",
+                        'category'=> $category,
+                    ],201);
+                }else{
+                    return response()->json([
+                        'success'=> false,
+                        'message'=> "some problem",
+                    ],201);
+                }
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>false,
+                'error'=>$e->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -105,6 +138,39 @@ class CategroryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::find($id);
+        if (!$category) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Category introuvable'
+            ],422);
+        }
+        $category->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Category supprimé success'
+        ], 200);
+    }
+
+    public function search($search)
+    {
+        try {
+            $categories= Category::where('category_name','LIKE','%'.$search.'%')-> orderBy('id', 'desc')->get();
+            if ($categories) {
+                return response()->json([
+                    'success'=>true,
+                    'categories'=>$categories
+                ],200);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>false,
+                'error'=>$e->getMessage()
+            ]);
+        }
+
     }
 }
+
+

@@ -10,4 +10,5 @@ Route::get('/user', function (Request $request) {
 
 Route::prefix('/admin')->group(function(){
     Route::apiResource('/categories', CategroryController::class);
+    Route::get('/categories/{search}', [CategroryController::class, 'search']);
 });
