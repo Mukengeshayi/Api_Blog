@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategroryController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,5 +18,10 @@ Route::prefix('/admin')->group(function(){
     //posts routes
     Route::apiResource('/posts', PostController::class);
     Route::get('/post/{searchByTitle}', [PostController::class, 'searchByTitle']);
+
+    //settings routes
+    Route::apiResource('/settings', SettingController::class);
+
+
 
 });
