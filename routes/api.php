@@ -16,4 +16,6 @@ Route::prefix('/admin')->group(function(){
 
     //posts routes
     Route::apiResource('/posts', PostController::class);
+    Route::get('/post/{searchByTitle}', [PostController::class, 'searchByTitle']);
+
 });
